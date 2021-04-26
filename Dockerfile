@@ -11,7 +11,6 @@ WORKDIR /app
 EXPOSE 8000
 
 ENV PYTHONUNBUFFERED=1 \
-    PYTHONPATH=/app \
     PORT=8000
 
 RUN mkdir -p /vol/web/media
