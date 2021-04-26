@@ -23,6 +23,6 @@ RUN chmod -R 755 /vol/web
 #swtiching to user
 USER user
 
-RUN python manage.py collectstatic --noinput --clear
+#RUN python manage.py collectstatic --noinput
 
 CMD uwsgi --socket :8000 --master --enable-threads --module config.wsgi
