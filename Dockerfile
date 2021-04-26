@@ -1,7 +1,5 @@
 FROM python:3.8-alpine
 
-ENV PATH="/scripts:${PATH}"
-
 COPY ./requirements.txt /requirements.txt
 RUN apk add --update --no-cache --virtual .tmp gcc libc-dev linux-headers
 RUN pip install -r /requirements.txt
@@ -9,9 +7,13 @@ RUN pip install -r /requirements.txt
 RUN mkdir /app
 COPY . /app
 WORKDIR /app
-COPY ./scripts /scripts
 
-RUN chmod +x /scripts/*
+EXPOSE 8000
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app \
+    PORT=8000 \
+
 
 RUN mkdir -p /vol/web/media
 RUN mkdir -p /vol/web/static
@@ -22,4 +24,6 @@ RUN chmod -R 755 /vol/web
 #swtiching to user
 USER user
 
-CMD ["entrypoint.sh"]
+RUN python manage.py collectstatic --noinput --clear
+
+CMD uwsgi --socket :8000 --master --enable-threads --module config.wsgi
