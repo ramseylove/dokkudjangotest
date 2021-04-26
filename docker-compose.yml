@@ -1,21 +1,22 @@
 version: '3.7'
 
 services:
-	app:
-		build:
-			context: .
-		volumes:
-			- static_data:/vol/web
+  web:
+    build:
+      context: .
+    volumes:
+      - static_data:/vol/web
+      - static_data:/vol/static
 
-	proxy:
-		build:
-			context: ./nginx
-		volumes:
-			- static_data:/vol/static
-		ports:
-			- "8080:8080"
-		depends_on:
-			- app
+#  proxy:
+#    build:
+#      context: ./nginx
+#    volumes:
+#      - static_data:/vol/static
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      - web
 
-	volumes:
-		static_data:
+  volumes:
+    static_data:

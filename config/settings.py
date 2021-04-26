@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -80,6 +80,13 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+env = os.environ.Env()
+
+if 'DATABASE_URL' in env:
+    DATABASES["default"] = env.db("DATABASE_URL")  # noqa F405
+    DATABASES["default"]["ATOMIC_REQUESTS"] = True  # noqa F405
+    DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=60)  # noqa F405
 
 
 # Password validation
