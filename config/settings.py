@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-import os
+import environ
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -81,7 +81,7 @@ DATABASES = {
     }
 }
 
-env = os.environ.Env()
+env = environ.Env()
 
 if 'DATABASE_URL' in env:
     DATABASES["default"] = env.db("DATABASE_URL")  # noqa F405
