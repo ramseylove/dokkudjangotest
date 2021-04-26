@@ -12,8 +12,7 @@ EXPOSE 8000
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONPATH=/app \
-    PORT=8000 \
-
+    PORT=8000
 
 RUN mkdir -p /vol/web/media
 RUN mkdir -p /vol/web/static
