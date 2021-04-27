@@ -4,16 +4,24 @@ RUN mkdir /app
 WORKDIR /app
 
 ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
     PORT=8000
 
-COPY ./requirements.txt /requirements.txt
-RUN apk add --update --no-cache --virtual .tmp gcc libc-dev linux-headers
-RUN pip install -r /requirements.txt
+RUN apk update \
+    && apk add --virtual build-deps gcc python3-dev musl-dev \
+    && apk add postgresql-dev \
+    && pip install psycopg2 \
+    && apk del build-deps
 
-COPY . /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY . .
 
 RUN mkdir -p /vol/web/media
 RUN mkdir -p /vol/web/static
+
+RUN ./manage.py collectstatic --noinput
 
 RUN adduser -D user
 RUN chown -R user:user /vol
@@ -21,6 +29,4 @@ RUN chmod -R 755 /vol/web
 #swtiching to user
 USER user
 
-RUN ./manage.py collectstatic --noinput
-
-CMD gunicorn config.wsgi:application
+CMD gunicorn config.wsgi:application --bind 0.0.0.0:$PORT

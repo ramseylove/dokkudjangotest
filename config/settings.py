@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -80,13 +81,12 @@ DATABASES = {
 
     }
 }
-import environ
-env = environ.Env()
 
-if 'DATABASE_URL' in env:
-    DATABASES["default"] = env.db("DATABASE_URL")  # noqa F405
+
+if os.environ.get('DATABASE_URL'):
+    DATABASES["default"] = os.environ.get('DATABASE_URL') # noqa F405
     DATABASES["default"]["ATOMIC_REQUESTS"] = True  # noqa F405
-    DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=60)  # noqa F405
+    DATABASES["default"]["CONN_MAX_AGE"] = os.environ.get("CONN_MAX_AGE", default=60)  # noqa F405
 
 
 # Password validation
@@ -126,10 +126,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/static/'
-# MEDIA_URL = '/static/media/'
-#
-# STATIC_ROOT = '/vol/web/static'
-# MEDIA_ROOT = '/vol/web/media'
+MEDIA_URL = '/static/media/'
+
+STATIC_ROOT = '/vol/web/static'
+MEDIA_ROOT = '/vol/web/media'
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
