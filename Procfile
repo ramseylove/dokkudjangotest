@@ -1,3 +1,3 @@
-web: uwsgi --socket :8000 --master --enable-threads --module config.wsgi
+web: gunicorn config.wsgi:application
 
 release: python manage.py migrate --noinput

@@ -23,4 +23,4 @@ USER user
 
 RUN ./manage.py collectstatic --noinput
 
-CMD uwsgi --socket :8000 --master --enable-threads --module config.wsgi
+CMD gunicorn config.wsgi:application
