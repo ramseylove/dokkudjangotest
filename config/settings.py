@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
+import dj_database_url
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -75,19 +76,19 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-
+# to facilitate on dokku environment | by resgef
+if os.environ.get('DATABASE_URL', ''):
+    DATABASES = {
+        'default': dj_database_url.config(),
+        'ATOMIC_REQUESTS': True
     }
-}
-
-
-if os.environ.get('DATABASE_URL'):
-    DATABASES["default"] = os.environ.get('DATABASE_URL') # noqa F405
-    DATABASES["default"]["ATOMIC_REQUESTS"] = True  # noqa F405
-    DATABASES["default"]["CONN_MAX_AGE"] = os.environ.get("CONN_MAX_AGE", default=60)  # noqa F405
-
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
