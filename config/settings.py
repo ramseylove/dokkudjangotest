@@ -79,9 +79,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # to facilitate on dokku environment | by resgef
 if os.environ.get('DATABASE_URL', ''):
     DATABASES = {
-        'default': dj_database_url.config(),
-        'ATOMIC_REQUESTS': True
+        'default': dj_database_url.config()
     }
+    # DATABASES['ATOMIC_REQUESTS'] = True
 else:
     DATABASES = {
         'default': {
